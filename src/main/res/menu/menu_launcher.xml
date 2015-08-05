@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".LauncherActivity">
+    <!--版本信息-->
+    <item
+        android:id="@+id/action_version"
+        android:orderInCategory="100"
+        android:title="@string/version_info"
+        app:showAsAction="never" />
+</menu>
