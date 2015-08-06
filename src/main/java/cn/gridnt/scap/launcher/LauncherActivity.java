@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -38,6 +40,8 @@ public class LauncherActivity extends Activity implements AdapterView.OnItemClic
      * 应用grid
      */
     private GridView mAppGrid;
+    private static final int NUM_OF_COLS_LAND = 7;
+    private static final int NUM_OF_COLS_PORT = 5;
     /**
      * 应用适配器
      */
@@ -83,6 +87,18 @@ public class LauncherActivity extends Activity implements AdapterView.OnItemClic
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // 横屏
+            mAppGrid.setNumColumns(NUM_OF_COLS_LAND);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // 竖屏
+            mAppGrid.setNumColumns(NUM_OF_COLS_PORT);
+        }
+    }
+
+    @Override
     public void onAppInstalled(String packageName) {
         /**
          * 应用被安装：查询应用信息，将新应用显示在列表中
@@ -122,12 +138,22 @@ public class LauncherActivity extends Activity implements AdapterView.OnItemClic
         }
     }
 
+    private void l(String message) {
+        Log.w("*app*", message);
+    }
 
     /**
      * 初始化用于显示所有应用的grid
      */
     private void setupAppGrid() {
         mAppGrid = (GridView) findViewById(R.id.gv_apps);
+        // 横竖屏每行项目数不同
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mAppGrid.setNumColumns(NUM_OF_COLS_PORT);
+        } else {
+            mAppGrid.setNumColumns(NUM_OF_COLS_LAND);
+        }
         mAppGrid.setOnItemClickListener(this);
         mAppAdapter = new AppGridAdapter(this);
         mAppAdapter.setInstalledApps(getInstalledApps());
